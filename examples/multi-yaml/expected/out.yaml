@@ -1,0 +1,28 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+    name: kumquat-sample-role
+rules:
+    - apiGroups:
+        - dynamodb.aws.upbound.io
+        - opensearch.aws.upbound.io
+        - appautoscaling.aws.upbound.io
+      resources:
+        - '*'
+      verbs:
+        - get
+        - list
+        - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+    name: kumquat-sample-role-binding
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: kumquat-sample-role
+subjects:
+    - kind: ServiceAccount
+      name: default
+      namespace: default

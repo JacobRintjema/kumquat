@@ -23,16 +23,9 @@ Kumquat supports the following template languages:
 
 
 ## Example
-Kubernetes RBAC is powerful, but sometimes it is a bit limited. Imagine you want a `ClusterRole`
-that provides read access to all the Crossplane resources in your cluster that are provided by
-the Crossplane AWS providers. Each provider creates resources under a multitude of API groups:
-`s3.aws.upbound.io`, `dynamodb.aws.upbound.io`, etc. Since Kubernetes doesn't support wildcards
-in the `apiGroups` field of the `ClusterRole`, you'll have to list them all manually, and keep
-this list up-to-date as new AWS providers are installed.
+Kubernetes RBAC is powerful, but sometimes it is a bit limited. Imagine you want a `ClusterRole` that provides read access to all the Crossplane resources in your cluster that are provided by the Crossplane AWS providers. Each provider creates resources under a multitude of API groups: `s3.aws.upbound.io`, `dynamodb.aws.upbound.io`, etc. Since Kubernetes doesn't support wildcards in the `apiGroups` field of the `ClusterRole`, you'll have to list them all manually, and keep this list up-to-date as new AWS providers are installed.
 
-Kumquat can help! In the following `Template`, kumquat queries for all the CRDs in the cluster, and
-finds those that end in `.aws.upbound.io`. It passes those to a CUE program that finds the set of
-unique API group names, and outputs a `ClusterRole` with those API groups.
+Kumquat can help! In the following `Template`, kumquat queries for all the CRDs in the cluster, and finds those that end in `.aws.upbound.io`. It passes those to a CUE program that finds the set of unique API group names, and outputs a `ClusterRole` with those API groups.
 
 ```yaml
 apiVersion: kumquat.guidewire.com/v1beta1
@@ -91,6 +84,29 @@ rules:
 
 Because kumquat is a controller, when new Crossplane AWS providers are installed it will automatically
 detect the new CRDs and update the `ClusterRole` accordingly.
+
+
+## Examples
+
+The `examples` directory contains several practical demonstrations of kumquat's capabilities. Each example shows a different use case for using templates to solve Kubernetes configuration challenges:
+
+### 1. extending-rbac
+
+This example demonstrates how to generate a ClusterRole for AWS Crossplane resources by querying CRDs and extracting unique API groups. It addresses the limitation of Kubernetes RBAC not supporting wildcards in the `apiGroups` field, making it easier to maintain roles for dynamic API groups.
+
+### 2. multi-yaml
+
+Shows how to generate multiple related Kubernetes resources (ClusterRole and ClusterRoleBinding) in a single template using CUE list syntax. This pattern is useful when you need to create sets of resources that reference each other, while maintaining them together within a single template.
+
+### 3. aws-auth
+
+Solves a multi-ownership problem for the EKS aws-auth ConfigMap. In EKS clusters, various systems may need to add IAM-to-Kubernetes role mappings, but the aws-auth ConfigMap can only have one owner. This example shows how kumquat can aggregate role mappings from multiple ConfigMaps into a single aws-auth ConfigMap, allowing different systems to manage their own mappings independently.
+
+You can run all examples using:
+
+```
+go run mage.go examples
+```
 
 
 ## Other Example Ideas
