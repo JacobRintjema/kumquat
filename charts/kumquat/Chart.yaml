@@ -1,0 +1,17 @@
+apiVersion: v2
+name: kumquat
+description: A Kubernetes controller for generating resources from templates
+type: application
+version: 0.1.0
+appVersion: "latest"
+keywords:
+  - kubernetes
+  - controller
+  - template
+  - generation
+home: https://github.com/guidewire-oss/kumquat
+sources:
+  - https://github.com/guidewire-oss/kumquat
+maintainers:
+  - name: Guidewire
+    url: https://github.com/guidewire-oss
